@@ -27,26 +27,26 @@ const Chat = () => {
   );
 }
 
+const Posts = (props) => (
+  <div>
+    <h1>The Posts:</h1>
+    <ul>
+      {_.map(props.posts, (post, id) =>
+        <li key={id}>
+          <Post {...post} />
+        </li>
+      )}
+    </ul>
+    <button onClick={props.pushPost}>post</button>
+  </div>
+);
 const LivePosts = connect((props, ref) => ({
     posts: 'posts',
     pushPost: () => ref('posts').push({
         what: 'Ever: '+Math.random(),
       }),
-  })) (
-    (props) => (
-      <div>
-        <h1>The Posts:</h1>
-        <ul>
-          {_.map(props.posts, (post, id) =>
-            <li key={id}>
-              <Post {...post} />
-            </li>
-          )}
-        </ul>
-        <button onClick={props.pushPost}>post</button>
-      </div>
-    )
-  );
+  })
+) (Posts);
 
 // const LiveRooms = (roomsRef) => NamedThings('Rooms!', roomsRef);
 /*
