@@ -40,6 +40,7 @@ Chat!  Auth, users, rooms, messages, all live updating.
 ## Working
 
 - Hello World (per [this](http://blog.tylerbuchea.com/create-react-app-firebase-for-prototyping/))
+- Live Posts (adding to list)
 
 ## TODO
 

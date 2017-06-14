@@ -8,35 +8,15 @@ import * as _ from 'lodash';
 import './index.css';
 
 
-// Initialize Firebase
-const config = {
+firebase.initializeApp({
   apiKey: "AIzaSyAISM-8pOrWliQ8rpSS0SHC5kHwxk7NZ0w",
   authDomain: "chit-chat-42aa1.firebaseapp.com",
   databaseURL: "https://chit-chat-42aa1.firebaseio.com",
   projectId: "chit-chat-42aa1",
   storageBucket: "chit-chat-42aa1.appspot.com",
   messagingSenderId: "251175505954"
-};
-firebase.initializeApp(config);
-const db = firebase.database();
+});
 
-const Prototype = (props) => {
-  console.log('snapshot', props);
-  const post = () => {
-    const postRef = db.ref('posts').push({
-      what: 'ever:'+Math.random(),
-    });
-    console.log(postRef);
-  };
-  return (
-    <div>
-      <h1>My Prototype</h1>
-      <pre>{JSON.stringify(props,0,2)}</pre>
-      <button onClick={post}>post</button>
-      <Posts posts={props.posts} />
-    </div>
-  );
-}
 
 const Chat = () => {
   return (
@@ -47,20 +27,29 @@ const Chat = () => {
   );
 }
 
-const LivePosts = connect({
-    posts:'posts'
-  })(
-    ({posts}) => (
+const LivePosts = connect((props, ref) => ({
+    posts: 'posts',
+    pushPost: () => ref('posts').push({
+        what: 'Ever: '+Math.random(),
+      }),
+  })) (
+    (props) => (
       <div>
-        <h1>Theeeee Posts:</h1>
+        <h1>The Posts:</h1>
         <ul>
-          {_.map(posts, (post, id) => <li key={id}><Post {...post} /></li>)}
+          {_.map(props.posts, (post, id) =>
+            <li key={id}>
+              <Post {...post} />
+            </li>
+          )}
         </ul>
+        <button onClick={props.pushPost}>post</button>
       </div>
     )
   );
 
 // const LiveRooms = (roomsRef) => NamedThings('Rooms!', roomsRef);
+/*
 const NamedThings = (title, thingsById) => {
   return (
     <div>
@@ -75,15 +64,7 @@ const NamedThings = (title, thingsById) => {
     </div>
   );
 }
-
-const Posts = ({posts}) => (
-  <div>
-    <h1>The Posts:</h1>
-    <ul>
-      {_.map(posts, (post, id) => <li key={id}><Post {...post} /></li>)}
-    </ul>
-  </div>
-);
+*/
 
 const Post = ({what}) => (
   <div>
@@ -92,13 +73,6 @@ const Post = ({what}) => (
 );
 
 
-db.ref().on('value', snapshot => {
-  const store = snapshot.val();
-  ReactDOM.render(
-    <Prototype {...store} />,
-    document.getElementById('root-prototype')
-  );
-});
 ReactDOM.render(
   <Chat />,
   document.getElementById('root')
