@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 // import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase';
+import { connect } from 'react-firebase'
 import * as _ from 'lodash';
 import './index.css';
 
@@ -19,14 +20,12 @@ const config = {
 firebase.initializeApp(config);
 const db = firebase.database();
 
-const App = (props) => {
+const Prototype = (props) => {
   console.log('snapshot', props);
   const post = () => {
-    const aPost = {
+    const postRef = db.ref('posts').push({
       what: 'ever:'+Math.random(),
-    }
-    db.ref('post').set(aPost);
-    const postRef = db.ref('posts').push(aPost);
+    });
     console.log(postRef);
   };
   return (
@@ -34,25 +33,61 @@ const App = (props) => {
       <h1>My Prototype</h1>
       <pre>{JSON.stringify(props,0,2)}</pre>
       <button onClick={post}>post</button>
-      <Post {...props.post} />
       <Posts posts={props.posts} />
     </div>
   );
 }
 
-const Post = ({what}) => (
-  <div>
-    <h1>A post</h1>
-    {what}
-  </div>
-);
+const Chat = () => {
+  return (
+    <div>
+      <h1>Chat</h1>
+      <LivePosts />
+    </div>
+  );
+}
+
+const LivePosts = connect({
+    posts:'posts'
+  })(
+    ({posts}) => (
+      <div>
+        <h1>Theeeee Posts:</h1>
+        <ul>
+          {_.map(posts, (post, id) => <li key={id}><Post {...post} /></li>)}
+        </ul>
+      </div>
+    )
+  );
+
+// const LiveRooms = (roomsRef) => NamedThings('Rooms!', roomsRef);
+const NamedThings = (title, thingsById) => {
+  return (
+    <div>
+      <h1>{title}</h1>
+      <li>
+      {_.map(thingsById, (thing, id) => (
+        <li key={id}>
+          {thing.name}
+        </li>
+      ))}
+      </li>
+    </div>
+  );
+}
 
 const Posts = ({posts}) => (
   <div>
     <h1>The Posts:</h1>
     <ul>
-      {_.map(posts, (post) => <li><Post {...post} /></li>)}
+      {_.map(posts, (post, id) => <li key={id}><Post {...post} /></li>)}
     </ul>
+  </div>
+);
+
+const Post = ({what}) => (
+  <div>
+    {what}
   </div>
 );
 
@@ -60,15 +95,15 @@ const Posts = ({posts}) => (
 db.ref().on('value', snapshot => {
   const store = snapshot.val();
   ReactDOM.render(
-    <App {...store} />,
-    document.getElementById('root')
+    <Prototype {...store} />,
+    document.getElementById('root-prototype')
   );
 });
-
 ReactDOM.render(
-  <App />,
+  <Chat />,
   document.getElementById('root')
 );
+
 
 
 // ReactDOM.render(<App />, document.getElementById('root'));
