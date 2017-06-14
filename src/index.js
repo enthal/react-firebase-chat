@@ -29,54 +29,42 @@ const Chat = () => {
 }
 
 
-const Users = (props) => {
-  return (
-    <div>
-      <h1>Users:</h1>
-      <ul>
-        {_.map(props.users, (post, id) =>
-          <li key={id}>
-            <Post {...post} />
-          </li>
-        )}
-      </ul>
-      <InputAndButton
-        buttonTitle="Make User"
-        onSubmit={what => props.pushUser(what)}
-        />
-    </div>
-  )
-};
 const LiveUsers = connect((props, ref) => ({
     users: 'users',
     pushUser: (what) => ref('users').push({what}),
   })
-) (Users);
+)(
+  ({users, pushUser}) =>
+    NamedThings("Users", users, pushUser, Post)
+);
 
 
-const Rooms = (props) => {
-  return (
-    <div>
-      <h1>Rooms:</h1>
-      <ul>
-        {_.map(props.rooms, (post, id) =>
-          <li key={id}>
-            <Post {...post} />
-          </li>
-        )}
-      </ul>
-      <InputAndButton
-        buttonTitle="Make Room"
-        onSubmit={what => props.pushRoom(what)}
-        />
-    </div>
-  )
-};
 const LiveRooms = connect((props, ref) => ({
     rooms: 'rooms',
     pushRoom: (what) => ref('rooms').push({what}),
   })
-) (Rooms);
+)(
+  ({rooms, pushRoom}) =>
+    NamedThings("Rooms", rooms, pushRoom, Post)
+);
+
+
+const NamedThings = (title, thingsById, make, renderThing) => (
+  <div className='.named-things'>
+    <h1>{title}</h1>
+    <ul>
+    {_.map(thingsById, (thing, id) => (
+      <li key={id}>
+        {renderThing(thing)}
+      </li>
+    ))}
+    </ul>
+    <InputAndButton
+      buttonTitle="Make"
+      onSubmit={what => make(what)}
+      />
+  </div>
+);
 
 
 class InputAndButton extends React.Component {
@@ -113,23 +101,6 @@ class InputAndButton extends React.Component {
 }
 
 
-// const LiveRooms = (roomsRef) => NamedThings('Rooms!', roomsRef);
-/*
-const NamedThings = (title, thingsById) => {
-  return (
-    <div>
-      <h1>{title}</h1>
-      <li>
-      {_.map(thingsById, (thing, id) => (
-        <li key={id}>
-          {thing.name}
-        </li>
-      ))}
-      </li>
-    </div>
-  );
-}
-*/
 
 const Post = ({what}) => (
   <div>
