@@ -50,17 +50,6 @@ const LivePosts = connect((props, ref) => ({
 ) (Posts);
 
 const Rooms = (props) => {
-  /*
-  let editableNewRoomName = "";
-  const onNewRoomNameChange = (e) => { editableNewRoomName = e.target.value; }
-  const onNewRoomSubmit = (e) => {
-    console.log("onNewRoomSubmit");
-    e.preventDefault();
-    props.pushRoom(editableNewRoomName);
-    editableNewRoomName = "";
-  }
-  */
-
   return (
     <div>
       <h1>The Rooms:</h1>
@@ -75,6 +64,10 @@ const Rooms = (props) => {
         buttonTitle="Make Room"
         onSubmit={what => props.pushRoom(what)}
         />
+      <InputAndButton2
+        buttonTitle="Make Room 2"
+        onSubmit={what => props.pushRoom(what)}
+        />
     </div>
   )
 };
@@ -84,19 +77,42 @@ const LiveRooms = connect((props, ref) => ({
   })
 ) (Rooms);
 
+let theText = '';  // TODO no
+const InputAndButton2 = (props) => (
+  <form
+    onSubmit={e => {
+      console.log("onSubmit",e);
+      e.preventDefault();
+      props.onSubmit(theText.trim());
+      theText = "";
+    }}
+    >
+    <input
+      value={theText}
+      onChange={e => {
+        theText = e.target.value;
+        console.log('onChange', theText);
+      }}
+      />
+    <button disabled={!theText.trim()}>{props.buttonTitle}</button>
+  </form>
+);
+
 class InputAndButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       text: '',
     }
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   render() {
     return (
       <div>
-        <form onSubmit={(e)=>this.onSubmit(e)}>
-          <input onChange={(e)=>this.onChange(e)} value={this.state.text} />
+        <form onSubmit={this.onSubmit}>
+          <input onChange={this.onChange} value={this.state.text} />
           <button disabled={!this.state.text.trim()}>{this.props.buttonTitle}</button>
         </form>
       </div>
@@ -104,7 +120,7 @@ class InputAndButton extends React.Component {
   }
 
   onChange(e) {
-    this.setState({text: e.target.value});
+    this.setState({text: e.target.value.trimLeft()});
   }
 
   onSubmit(e) {
