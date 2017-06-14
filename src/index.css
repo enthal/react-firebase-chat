@@ -10,6 +10,11 @@ body {
   background-color: #EEE;
   border: 1px solid #CCC;
 }
-.selected {
-  color: red;
+
+.selectable-list li:hover {
+  background-color: #DDD;
+}
+.selectable-list .selected,
+.selectable-list .selected:hover {
+  background-color: #CCC;
 }

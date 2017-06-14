@@ -18,27 +18,31 @@ firebase.initializeApp({
   messagingSenderId: "251175505954"
 });
 
-const RUN = () => ReactDOM.render(
-  <Chat />,
-  document.getElementById('root')
-);
+class Chat extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedRoomId: null,
+    };
+    this.selectRoom = this.selectRoom.bind(this);
+  }
 
-const viewState = {};
-const selectRoom = roomId => {
-  viewState.selectedRoomId = roomId;
-  // viewState.liveRooms.forceUpdate();
-  console.log(viewState);
-}
+  selectRoom(roomId) {
+    this.setState({selectedRoomId: roomId});
+  }
 
-const Chat = () => {
-  viewState.liveRooms = <LiveRooms passthru="passed!"/>;
-  return (
-    <div>
-      <h1>Chat</h1>
-      <LiveUsers />
-      {viewState.liveRooms}
-    </div>
-  );
+  render() {
+    return (
+      <div>
+        <h1>Chat</h1>
+        <LiveUsers />
+        <LiveRooms
+          selectedRoomId={this.state.selectedRoomId}
+          selectRoom={this.selectRoom}
+          />
+      </div>
+    );
+  }
 }
 
 const LiveUsers = connect((props, ref) => ({
@@ -56,52 +60,29 @@ const LiveRooms = connect(
     rooms: 'rooms',
     pushRoom: (what) => ref('rooms').push({what}),
   }),
-  (ownProps, firebaseProps) => {
-    console.log('LiveRooms mergeProps:', ownProps, firebaseProps);
-    return Object.assign({the:'thing'}, ownProps, firebaseProps);
-  },
 )(
-  ({rooms, pushRoom, passthru}) =>
-    NamedThings("Rooms", rooms, pushRoom, Room, passthru)
+  ({rooms, pushRoom, selectedRoomId, selectRoom}) =>
+    NamedThings("Rooms", rooms, pushRoom, Room, selectedRoomId, selectRoom)
 );
 
-const Room = ({what}, id) => (
-  <div
-    className={classNames({selected: id === viewState.selectedRoomId})}
-    onClick={()=> selectRoom(id)}
-    >
+const Room = ({what}) => (
+  <div>
     {what}
   </div>
 );
 
-/*
-class Room extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected: false,
-    }
-    this.onClick = this.onClick.bind(this);
-  }
-  onClick(e) {
-    this.setState(state => { selected:!state.selected });
-  }
-  render() {
-    <div
-      className={classNames({'selected':this.state.selected})}
-      onClick={this.onClick}>
-    </div>
-  }
-}
-// */
 
 
-const NamedThings = (title, thingsById, make, renderThing, the) => (
-  <div className='named-things'>
+const NamedThings = (title, thingsById, make, renderThing, selectedId, select) => (
+  <div className={classNames('named-things', {'selectable-list':select})}>
     <h1>{title}</h1>
     <ul>
     {_.map(thingsById, (thing, id) => (
-      <li key={id}>
+      <li
+        key={id}
+        className={classNames({selected: id === selectedId})}
+        onClick={()=>select&&select(id)}
+        >
         {renderThing(thing, id)}
       </li>
     ))}
@@ -110,7 +91,6 @@ const NamedThings = (title, thingsById, make, renderThing, the) => (
       buttonTitle="Make"
       onSubmit={what => make(what)}
       />
-    {the}
   </div>
 );
 
@@ -156,8 +136,9 @@ const Post = ({what}) => (
   </div>
 );
 
-RUN();
 
-// ReactDOM.render(<App />, document.getElementById('root'));
-
+ReactDOM.render(
+  <Chat />,
+  document.getElementById('root')
+);
 registerServiceWorker();
