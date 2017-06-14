@@ -23,6 +23,7 @@ const Chat = () => {
     <div>
       <h1>Chat</h1>
       <LivePosts />
+      <LiveRooms />
     </div>
   );
 }
@@ -47,6 +48,73 @@ const LivePosts = connect((props, ref) => ({
       }),
   })
 ) (Posts);
+
+const Rooms = (props) => {
+  /*
+  let editableNewRoomName = "";
+  const onNewRoomNameChange = (e) => { editableNewRoomName = e.target.value; }
+  const onNewRoomSubmit = (e) => {
+    console.log("onNewRoomSubmit");
+    e.preventDefault();
+    props.pushRoom(editableNewRoomName);
+    editableNewRoomName = "";
+  }
+  */
+
+  return (
+    <div>
+      <h1>The Rooms:</h1>
+      <ul>
+        {_.map(props.rooms, (post, id) =>
+          <li key={id}>
+            <Post {...post} />
+          </li>
+        )}
+      </ul>
+      <InputAndButton
+        buttonTitle="Make Room"
+        onSubmit={what => props.pushRoom(what)}
+        />
+    </div>
+  )
+};
+const LiveRooms = connect((props, ref) => ({
+    rooms: 'rooms',
+    pushRoom: (what) => ref('rooms').push({what}),
+  })
+) (Rooms);
+
+class InputAndButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: '',
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={(e)=>this.onSubmit(e)}>
+          <input onChange={(e)=>this.onChange(e)} value={this.state.text} />
+          <button disabled={!this.state.text.trim()}>{this.props.buttonTitle}</button>
+        </form>
+      </div>
+    );
+  }
+
+  onChange(e) {
+    this.setState({text: e.target.value});
+  }
+
+  onSubmit(e) {
+    console.log("onSubmit",e);
+    e.preventDefault();
+    this.props.onSubmit(this.state.text.trim());
+    this.setState({text: ""});
+  }
+}
+
 
 // const LiveRooms = (roomsRef) => NamedThings('Rooms!', roomsRef);
 /*
