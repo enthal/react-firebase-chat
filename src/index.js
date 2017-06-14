@@ -25,17 +25,24 @@ class Chat extends React.Component {
       selectedRoomId: null,
     };
     this.selectRoom = this.selectRoom.bind(this);
+    this.selectUser = this.selectUser.bind(this);
   }
 
-  selectRoom(roomId) {
-    this.setState({selectedRoomId: roomId});
+  selectRoom(id) {
+    this.setState({selectedRoomId: id});
+  }
+  selectUser(id) {
+    this.setState({selectedUserId: id});
   }
 
   render() {
     return (
       <div>
         <h1>Chat</h1>
-        <LiveUsers />
+        <LiveUsers
+          selectedUserId={this.state.selectedUserId}
+          selectUser={this.selectUser}
+          />
         <LiveRooms
           selectedRoomId={this.state.selectedRoomId}
           selectRoom={this.selectRoom}
@@ -50,8 +57,8 @@ const LiveUsers = connect((props, ref) => ({
     pushUser: (what) => ref('users').push({what}),
   })
 )(
-  ({users, pushUser}) =>
-    NamedThings("Users", users, pushUser, Post)
+  ({users, pushUser, selectedUserId, selectUser}) =>
+    NamedThings("Users", users, pushUser, Post, selectedUserId, selectUser)
 );
 
 
