@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase';
 import { connect } from 'react-firebase'
+import { Form, Text } from 'react-form'
 import * as _ from 'lodash';
 import './index.css';
 
@@ -49,8 +50,7 @@ const LivePosts = connect((props, ref) => ({
   })
 ) (Posts);
 
-const Rooms = (props) => {
-  return (
+const Rooms = (props) => (
     <div>
       <h1>The Rooms:</h1>
       <ul>
@@ -60,13 +60,33 @@ const Rooms = (props) => {
           </li>
         )}
       </ul>
+
       <InputAndButton
         buttonTitle="Make Room"
         onSubmit={what => props.pushRoom(what)}
         />
+
+      <Form
+        onSubmit={({name}) => props.pushRoom(name)}
+        postSubmit={(values) => {
+           console.log('Success!', values);
+           values.name = "";
+        }}
+        validate={({ name }) => {
+          return {
+            name: !(name||'').trim() ? 'A name is required' : undefined
+          }
+        }}
+      >
+        {({submitForm}) => (
+          <form onSubmit={submitForm}>
+            <Text field='name' />
+            <button type='submit'>Make Room</button>
+          </form>
+        ) }
+      </Form>
     </div>
   )
-};
 const LiveRooms = connect((props, ref) => ({
     rooms: 'rooms',
     pushRoom: (what) => ref('rooms').push({what}),
