@@ -22,37 +22,42 @@ const Chat = () => {
   return (
     <div>
       <h1>Chat</h1>
-      <LivePosts />
+      <LiveUsers />
       <LiveRooms />
     </div>
   );
 }
 
-const Posts = (props) => (
-  <div>
-    <h1>The Posts:</h1>
-    <ul>
-      {_.map(props.posts, (post, id) =>
-        <li key={id}>
-          <Post {...post} />
-        </li>
-      )}
-    </ul>
-    <button onClick={props.pushPost}>post</button>
-  </div>
-);
-const LivePosts = connect((props, ref) => ({
-    posts: 'posts',
-    pushPost: () => ref('posts').push({
-        what: 'Ever: '+Math.random(),
-      }),
+
+const Users = (props) => {
+  return (
+    <div>
+      <h1>Users:</h1>
+      <ul>
+        {_.map(props.users, (post, id) =>
+          <li key={id}>
+            <Post {...post} />
+          </li>
+        )}
+      </ul>
+      <InputAndButton
+        buttonTitle="Make User"
+        onSubmit={what => props.pushUser(what)}
+        />
+    </div>
+  )
+};
+const LiveUsers = connect((props, ref) => ({
+    users: 'users',
+    pushUser: (what) => ref('users').push({what}),
   })
-) (Posts);
+) (Users);
+
 
 const Rooms = (props) => {
   return (
     <div>
-      <h1>The Rooms:</h1>
+      <h1>Rooms:</h1>
       <ul>
         {_.map(props.rooms, (post, id) =>
           <li key={id}>
