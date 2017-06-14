@@ -15,23 +15,26 @@ const config = {
   storageBucket: "chit-chat-42aa1.appspot.com",
   messagingSenderId: "251175505954"
 };
-const fb = firebase
-  .initializeApp(config)
-  .database()
-  .ref();
+firebase.initializeApp(config)
+  // .database()
+  // .ref();
+const db = firebase.database();
 
-console.log('fb',fb);
 const App = (props) => {
   console.log('snapshot', props);
+  const post = () => db.ref('post').set({
+    what: 'ever:'+Math.random(),
+  });
   return (
     <div>
       <h1>My Prototype</h1>
       <pre>{JSON.stringify(props,0,2)}</pre>
+      <button onClick={post}>post</button>
     </div>
   );
 }
 
-fb.on('value', snapshot => {
+db.ref().on('value', snapshot => {
   const store = snapshot.val();
   ReactDOM.render(
     <App {...store} />,
