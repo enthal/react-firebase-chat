@@ -15,9 +15,7 @@ const config = {
   storageBucket: "chit-chat-42aa1.appspot.com",
   messagingSenderId: "251175505954"
 };
-firebase.initializeApp(config)
-  // .database()
-  // .ref();
+firebase.initializeApp(config);
 const db = firebase.database();
 
 const App = (props) => {
@@ -30,9 +28,17 @@ const App = (props) => {
       <h1>My Prototype</h1>
       <pre>{JSON.stringify(props,0,2)}</pre>
       <button onClick={post}>post</button>
+      <Post {...props.post} />
     </div>
   );
 }
+
+const Post = ({what}) => (
+  <div>
+    <h1>A post</h1>
+    {what}
+  </div>
+);
 
 db.ref().on('value', snapshot => {
   const store = snapshot.val();
