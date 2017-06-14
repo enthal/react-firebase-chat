@@ -50,7 +50,7 @@ const LiveRooms = connect((props, ref) => ({
 
 
 const NamedThings = (title, thingsById, make, renderThing) => (
-  <div className='.named-things'>
+  <div className='named-things'>
     <h1>{title}</h1>
     <ul>
     {_.map(thingsById, (thing, id) => (

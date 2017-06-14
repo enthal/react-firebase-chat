@@ -1,5 +1,12 @@
 body {
   margin: 0;
-  padding: 0;
+  padding: 1em;
   font-family: sans-serif;
+}
+
+.named-things {
+  padding: 1em;
+  margin: 1em;
+  background-color: #EEE;
+  border: 1px solid #CCC;
 }
