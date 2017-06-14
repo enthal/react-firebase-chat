@@ -32,6 +32,10 @@ Chat!  Auth, users, rooms, messages, all live updating.
     - Newest to oldest (up or down, just pick one)
     - Infinite-scroll (or load more button)
     - Auto-update on new Message
+  - Lists all members of Room, with Presence
+- Presence
+  - User sees when (dis)connected
+  - User sees (dis)connectedness for any other visible user name
 
 ## Working
 
