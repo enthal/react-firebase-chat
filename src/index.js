@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 // import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase';
+import * as _ from 'lodash';
 import './index.css';
 
 
@@ -20,15 +21,21 @@ const db = firebase.database();
 
 const App = (props) => {
   console.log('snapshot', props);
-  const post = () => db.ref('post').set({
-    what: 'ever:'+Math.random(),
-  });
+  const post = () => {
+    const aPost = {
+      what: 'ever:'+Math.random(),
+    }
+    db.ref('post').set(aPost);
+    const postRef = db.ref('posts').push(aPost);
+    console.log(postRef);
+  };
   return (
     <div>
       <h1>My Prototype</h1>
       <pre>{JSON.stringify(props,0,2)}</pre>
       <button onClick={post}>post</button>
       <Post {...props.post} />
+      <Posts posts={props.posts} />
     </div>
   );
 }
@@ -39,6 +46,16 @@ const Post = ({what}) => (
     {what}
   </div>
 );
+
+const Posts = ({posts}) => (
+  <div>
+    <h1>The Posts:</h1>
+    <ul>
+      {_.map(posts, (post) => <li><Post {...post} /></li>)}
+    </ul>
+  </div>
+);
+
 
 db.ref().on('value', snapshot => {
   const store = snapshot.val();
