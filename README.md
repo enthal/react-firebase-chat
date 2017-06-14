@@ -11,6 +11,7 @@ Chat!  Auth, users, rooms, messages, all live updating.
     - name
     - Members (Users)
     - Messages
+    - isDirect (between 2 Users, hiding name)
   - Message:
     - From (User)
     - timestamp
@@ -21,13 +22,16 @@ Chat!  Auth, users, rooms, messages, all live updating.
   - a user can only view messages or post in rooms of which user is member
   - logout
 - User:
-  - Lists all Rooms of which User is Member
-    - Auto-update on new Room
+  - Lists:
+    - all Rooms of which User is Member
+    - all other Users with whom this User has a direct Rooms
+    - with indicator of unread messages
   - creates Room (unique name, no members)
 - Member of room:
   - Adds nonmember User to Room
   - Posts a Message
   - Select some Room as Current
+    - marking it read
   - Reads Messages in current Room
     - Newest to oldest (up or down, just pick one)
     - Infinite-scroll (or load more button)
