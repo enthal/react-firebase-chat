@@ -88,16 +88,11 @@ const Room = ({what}) => (
 
 const LiveMessages = connect(
   ({selectedUserId, selectedRoomId}, ref) => ({
-    things: {
-      path: 'messages',
-      orderByChild: 'roomId',
-      equalTo: selectedRoomId,
-    },
+    things: 'messages/'+selectedRoomId,
     push: (text) => {
       if (!selectedUserId || !selectedRoomId)  return;
-      ref('messages').push({
+      ref('messages/'+selectedRoomId).push({
         userId: selectedUserId,
-        roomId: selectedRoomId,
         when: firebase.database.ServerValue.TIMESTAMP,
         text,
       });
