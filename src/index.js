@@ -40,13 +40,13 @@ class Chat extends React.Component {
       <div>
         <h1>Chat</h1>
         <LiveUsers
-          selectedUserId={this.state.selectedUserId}
-          selectUser={this.selectUser}
+          selectedId={this.state.selectedUserId}
+          select={this.selectUser}
           />
         {this.state.selectedUserId &&
           <LiveRooms
-            selectedRoomId={this.state.selectedRoomId}
-            selectRoom={this.selectRoom}
+            selectedId={this.state.selectedRoomId}
+            select={this.selectRoom}
             />
         }
         {this.state.selectedRoomId &&
@@ -61,23 +61,23 @@ class Chat extends React.Component {
 }
 
 const LiveUsers = connect((props, ref) => ({
-    users: 'users',
-    pushUser: (what) => ref('users').push({what}),
+    things: 'users',
+    push: (what) => ref('users').push({what}),
   })
 )(
-  ({users, pushUser, selectedUserId, selectUser}) =>
-    NamedThings("Users", users, pushUser, Post, selectedUserId, selectUser)
+  (propsAndData) =>
+    NamedThings("Users", Post, propsAndData)
 );
 
 
 const LiveRooms = connect(
   (props, ref) => ({
-    rooms: 'rooms',
-    pushRoom: (what) => ref('rooms').push({what}),
+    things: 'rooms',
+    push: (what) => ref('rooms').push({what}),
   }),
 )(
-  ({rooms, pushRoom, selectedRoomId, selectRoom}) =>
-    NamedThings("Rooms", rooms, pushRoom, Room, selectedRoomId, selectRoom)
+  (propsAndData) =>
+    NamedThings("Rooms", Room, propsAndData)
 );
 
 const Room = ({what}) => (
@@ -99,8 +99,8 @@ const LiveMessages = connect(
     },
   })
 )(
-  ({things, push, selectedRoomId, selectedUserId}) =>
-    NamedThings("Messages", things, push, Message)
+  (propsAndData) =>
+    NamedThings("Messages", Message, propsAndData)
 );
 
 const Message = ({userId, when, text}) => (
@@ -112,26 +112,29 @@ const Message = ({userId, when, text}) => (
 );
 
 
-const NamedThings = (title, thingsById, make, renderThing, selectedId, select) => (
-  <div className={classNames('named-things', {'selectable-list':select})}>
-    <h1>{title}</h1>
-    <ul>
-    {_.map(thingsById, (thing, id) => (
-      <li
-        key={id}
-        className={classNames({selected: id === selectedId})}
-        onClick={()=>select&&select(id)}
-        >
-        {renderThing(thing, id)}
-      </li>
-    ))}
-    </ul>
-    <InputAndButton
-      buttonTitle="Make"
-      onSubmit={what => make(what)}
-      />
-  </div>
-);
+const NamedThings = (title, renderThing, propsAndData) => {
+  const {things, push, selectedId, select} = propsAndData;
+  return (
+    <div className={classNames('named-things', {'selectable-list':select})}>
+      <h1>{title}</h1>
+      <ul>
+      {_.map(things, (thing, id) => (
+        <li
+          key={id}
+          className={classNames({selected: id === selectedId})}
+          onClick={()=>select&&select(id)}
+          >
+          {renderThing(thing, id)}
+        </li>
+      ))}
+      </ul>
+      <InputAndButton
+        buttonTitle="Make"
+        onSubmit={what => push(what)}
+        />
+    </div>
+  )
+};
 
 
 class InputAndButton extends React.Component {
