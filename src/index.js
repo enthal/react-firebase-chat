@@ -47,6 +47,10 @@ class Chat extends React.Component {
           selectedRoomId={this.state.selectedRoomId}
           selectRoom={this.selectRoom}
           />
+        <LiveMessages
+          selectedUserId={this.state.selectedUserId}
+          selectedRoomId={this.state.selectedRoomId}
+          />
       </div>
     );
   }
@@ -78,6 +82,31 @@ const Room = ({what}) => (
   </div>
 );
 
+const LiveMessages = connect(
+  ({selectedUserId, selectedRoomId}, ref) => ({
+    things: 'messages',
+    push: (text) => {
+      if (!selectedUserId || !selectedRoomId)  return;
+      ref('messages').push({
+        userId: selectedUserId,
+        roomId: selectedRoomId,
+        when: new Date(),
+        text,
+      });
+    },
+  })
+)(
+  ({things, push, selectedRoomId, selectedUserId}) =>
+    NamedThings("Messages", things, push, Message)
+);
+
+const Message = ({userId, when, text}) => (
+  <ul>
+    <li>{userId}</li>
+    <li>{when}</li>
+    <li>{text}</li>
+  </ul>
+);
 
 
 const NamedThings = (title, thingsById, make, renderThing, selectedId, select) => (
