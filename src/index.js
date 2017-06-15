@@ -90,7 +90,7 @@ const LiveMessages = connect(
       ref('messages').push({
         userId: selectedUserId,
         roomId: selectedRoomId,
-        when: new Date(),
+        when: firebase.database.ServerValue.TIMESTAMP,
         text,
       });
     },
@@ -103,7 +103,7 @@ const LiveMessages = connect(
 const Message = ({userId, when, text}) => (
   <ul>
     <li>{userId}</li>
-    <li>{when}</li>
+    <li>{when && (new Date(when)).toString()}</li>
     <li>{text}</li>
   </ul>
 );
