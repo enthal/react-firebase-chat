@@ -43,14 +43,18 @@ class Chat extends React.Component {
           selectedUserId={this.state.selectedUserId}
           selectUser={this.selectUser}
           />
-        <LiveRooms
-          selectedRoomId={this.state.selectedRoomId}
-          selectRoom={this.selectRoom}
-          />
-        <LiveMessages
-          selectedUserId={this.state.selectedUserId}
-          selectedRoomId={this.state.selectedRoomId}
-          />
+        {this.state.selectedUserId &&
+          <LiveRooms
+            selectedRoomId={this.state.selectedRoomId}
+            selectRoom={this.selectRoom}
+            />
+        }
+        {this.state.selectedRoomId &&
+          <LiveMessages
+            selectedUserId={this.state.selectedUserId}
+            selectedRoomId={this.state.selectedRoomId}
+            />
+        }
       </div>
     );
   }
@@ -84,7 +88,11 @@ const Room = ({what}) => (
 
 const LiveMessages = connect(
   ({selectedUserId, selectedRoomId}, ref) => ({
-    things: 'messages',
+    things: {
+      path: 'messages',
+      orderByChild: 'roomId',
+      equalTo: selectedRoomId,
+    },
     push: (text) => {
       if (!selectedUserId || !selectedRoomId)  return;
       ref('messages').push({
