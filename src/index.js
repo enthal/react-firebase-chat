@@ -97,23 +97,26 @@ const LiveMessages = connect(
         text,
       });
     },
+    users: 'users',
+    room: 'rooms/'+selectedRoomId,
   })
 )(
   (propsAndData) =>
     NamedThings("Messages", Message, propsAndData)
 );
 
-const Message = ({userId, when, text}) => (
-  <ul>
-    <li>{userId}</li>
-    <li>{when && (new Date(when)).toString()}</li>
-    <li>{text}</li>
+const Message = ({userId, when, text}, id, auxPropsAndData) => (
+  <ul className='message'>
+    <li className='from'>{(auxPropsAndData.users[userId]||[]).what}</li>
+    <li className='when'>{when && (new Date(when)).toString()}</li>
+    <li className='text'>{text}</li>
   </ul>
 );
 
 
 const NamedThings = (title, renderThing, propsAndData) => {
-  const {things, push, selectedId, select} = propsAndData;
+  const {things, push, selectedId, select, ...auxPropsAndData} = propsAndData;
+  if (select && !selectedId && _.size(things))  select(_.first(_.keys(things)));  // TODO: no: "Warning: setState(...): Cannot update during an existing state transition (such as within `render` or another component's constructor). Render methods should be a pure function of props and state; constructor side-effects are an anti-pattern, but can be moved to `componentWillMount`."
   return (
     <div className={classNames('named-things', {'selectable-list':select})}>
       <h1>{title}</h1>
@@ -124,7 +127,7 @@ const NamedThings = (title, renderThing, propsAndData) => {
           className={classNames({selected: id === selectedId})}
           onClick={()=>select&&select(id)}
           >
-          {renderThing(thing, id)}
+          {renderThing(thing, id, auxPropsAndData)}
         </li>
       ))}
       </ul>

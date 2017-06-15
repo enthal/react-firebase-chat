@@ -18,3 +18,9 @@ body {
 .selectable-list .selected:hover {
   background-color: #CCC;
 }
+.message .from {
+  font-size: 120%;
+}
+.message .when {
+  font-size: 60%;
+}
