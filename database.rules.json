@@ -3,17 +3,20 @@
     ".read":  "false",
     ".write": "false",
 
-    "rooms": {
-      ".read":  "true",
-      ".write": "true",
-    },
     "users": {
-      ".read":  "true",
-      ".write": "true",
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "$uid === auth.uid"
+      }
+    },
+
+    "rooms": {
+      ".read":  "auth != null",
+      ".write": "auth != null",
     },
     "messages": {
-      ".read":  "true",
-      ".write": "true",
+      ".read":  "auth != null",
+      ".write": "auth != null",
       "$room_id": {
         ".validate": "root.child('rooms').hasChild($room_id)",
         "$message_id": {
@@ -25,6 +28,10 @@
           ",
         }
       }
+    },
+
+    "lastSignin": {
+      ".write": "auth != null",
     }
   }
 }

@@ -16,16 +16,22 @@ class Chat extends React.Component {
     super(props);
     this.state = {
       selectedRoomId: null,
+      user: null,
     };
     this.selectRoom = this.selectRoom.bind(this);
-    this.selectUser = this.selectUser.bind(this);
   }
 
   selectRoom(id) {
     this.setState({selectedRoomId: id});
   }
-  selectUser(id) {
-    this.setState({selectedUserId: id});
+  componentDidMount() {
+    this.unlistenAuth = firebase.auth().onAuthStateChanged((user) => {
+      // user: same as firebase.auth().currentUser
+      this.setState({user});
+    });
+  }
+  componentWillUnmount() {
+    this.unlistenAuth && this.unlistenAuth();
   }
 
   render() {
@@ -33,21 +39,20 @@ class Chat extends React.Component {
       <div>
         <h1>Chat</h1>
         <Auth />
-        <LiveUsers
-          selectedId={this.state.selectedUserId}
-          select={this.selectUser}
-          />
-        {this.state.selectedUserId &&
+        {this.state.user &&
+          <div>
+          <LiveUsers />
           <LiveRooms
             selectedId={this.state.selectedRoomId}
             select={this.selectRoom}
             />
-        }
-        {this.state.selectedRoomId &&
-          <LiveMessages
-            selectedUserId={this.state.selectedUserId}
-            selectedRoomId={this.state.selectedRoomId}
-            />
+          {this.state.selectedRoomId &&
+            <LiveMessages
+              userId={this.state.user.uid}
+              selectedRoomId={this.state.selectedRoomId}
+              />
+          }
+          </div>
         }
       </div>
     );
@@ -56,13 +61,18 @@ class Chat extends React.Component {
 
 const LiveUsers = connect((props, ref) => ({
     things: 'users',
-    push: (what) => ref('users').push({what}),
   })
 )(
   (propsAndData) =>
-    NamedThings("Users", Post, propsAndData)
+    NamedThings("Users", UserDetail, propsAndData)
 );
 
+const UserDetail = ({displayName, email, photoURL}) => (
+  <ul className='user-detail'>
+    <li className='display-name'>{displayName}</li>
+    <li className='email'>{email}</li>
+  </ul>
+);
 
 const LiveRooms = connect(
   (props, ref) => ({
@@ -81,17 +91,17 @@ const Room = ({what}) => (
 );
 
 const LiveMessages = connect(
-  ({selectedUserId, selectedRoomId}, ref) => ({
+  ({userId, selectedRoomId}, ref) => ({  // TODO {auth}
     things: 'messages/'+selectedRoomId,
     push: (text) => {
-      if (!selectedUserId || !selectedRoomId)  return;
+      if (!userId || !selectedRoomId)  return;
       return ref('messages/'+selectedRoomId).push({
-        userId: selectedUserId,
+        userId,
         when: firebase.database.ServerValue.TIMESTAMP,
         text,
       });
     },
-    users: 'users',
+    users: 'users',  // TODO: with scale, getting all users will be bad
     room: 'rooms/'+selectedRoomId,
   })
 )(
@@ -99,12 +109,13 @@ const LiveMessages = connect(
     NamedThings("Messages", Message, propsAndData)
 );
 
-const Message = ({userId, when, text}, id, auxPropsAndData) => (
+const Message = ({userId, when, text}, id, {users}) => (
   <ul className='message'>
-    <li className='from'>{(auxPropsAndData.users[userId]||[]).what}</li>
+    <li className='from'>{(users&&users[userId]||[]).displayName}</li>
     <li className='when'>{when && (new Date(when)).toString()}</li>
     <li className='text'>{text}</li>
   </ul>
+  // TODO: from.onClick: show details on that user and any private/direct chat
 );
 
 
@@ -125,10 +136,12 @@ const NamedThings = (title, renderThing, propsAndData) => {
         </li>
       ))}
       </ul>
-      <InputAndButton
-        buttonTitle="Make"
-        onSubmit={what => push(what).catch(e => alert(e))}  // TODO: non-modal error reporting please
+      {push &&
+        <InputAndButton
+          buttonTitle="Make"
+          onSubmit={what => push(what).catch(e => alert(e))}  // TODO: non-modal error reporting please
         />
+      }
     </div>
   )
 };
