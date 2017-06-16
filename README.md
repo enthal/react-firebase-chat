@@ -41,16 +41,22 @@ Chat!  Auth, users, rooms, messages, all live updating.
   - User sees when (dis)connected
   - User sees (dis)connectedness for any other visible user name
 
+
 ## Working
 
 - Hello World (per [this](http://blog.tylerbuchea.com/create-react-app-firebase-for-prototyping/))
-- Live Posts (adding to list)
+- CRU+L (not D) Users (not Auth), Rooms, Messages
+  - Create Message as selected User (not Auth)
+- Display messages per selected room.
+- Message validation (db rules)
+
 
 ## TODO
 
 - Auth: create, login
-- DB rules for viewing rooms by membership
--
+- Limit rooms r/w to membershio
+  - DB rules for viewing rooms by membership
+
 
 # Of note
 
