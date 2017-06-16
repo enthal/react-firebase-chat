@@ -13,7 +13,10 @@
     },
     "messages": {
       ".read":  "true",
-      ".write": "true"
+      ".write": "true",
+      "$room_id" : {
+        ".validate": "root.child('rooms').hasChild($room_id)"
+      }
     }
   }
 }

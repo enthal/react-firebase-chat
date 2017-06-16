@@ -91,7 +91,7 @@ const LiveMessages = connect(
     things: 'messages/'+selectedRoomId,
     push: (text) => {
       if (!selectedUserId || !selectedRoomId)  return;
-      ref('messages/'+selectedRoomId).push({
+      return ref('messages/'+selectedRoomId).push({
         userId: selectedUserId,
         when: firebase.database.ServerValue.TIMESTAMP,
         text,
@@ -133,7 +133,7 @@ const NamedThings = (title, renderThing, propsAndData) => {
       </ul>
       <InputAndButton
         buttonTitle="Make"
-        onSubmit={what => push(what)}
+        onSubmit={what => push(what).catch(e => alert(e))}  // TODO: non-modal error reporting please
         />
     </div>
   )
