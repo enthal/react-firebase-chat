@@ -5,17 +5,25 @@
 
     "rooms": {
       ".read":  "true",
-      ".write": "true"
+      ".write": "true",
     },
     "users": {
       ".read":  "true",
-      ".write": "true"
+      ".write": "true",
     },
     "messages": {
       ".read":  "true",
       ".write": "true",
-      "$room_id" : {
-        ".validate": "root.child('rooms').hasChild($room_id)"
+      "$room_id": {
+        ".validate": "root.child('rooms').hasChild($room_id)",
+        "$message_id": {
+          ".validate": "
+            newData.hasChildren(['text', 'userId', 'when']) &&
+            newData.child('text').val().length > 0 &&
+            root.child('users').hasChild(newData.child('userId').val()) &&
+            newData.child('when').isNumber() && newData.child('when').val() > 1497549800000
+          ",
+        }
       }
     }
   }
