@@ -18,6 +18,11 @@ body {
 .selectable-list .selected:hover {
   background-color: #CCC;
 }
+.message {
+  border-top: 1px solid #DDD;
+  /*border-left: 2px solid #DDD;*/
+  margin-bottom: 0.5em;
+}
 .message .from {
   font-size: 120%;
 }
