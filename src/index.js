@@ -1,22 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // import App from './App';
+import Auth from './Auth';
+
 import registerServiceWorker from './registerServiceWorker';
-import * as firebase from 'firebase';
+import firebase from './firebase';
 import { connect } from 'react-firebase';
 import classNames from 'classnames';
 import * as _ from 'lodash';
 import './index.css';
 
-
-firebase.initializeApp({
-  apiKey: "AIzaSyAISM-8pOrWliQ8rpSS0SHC5kHwxk7NZ0w",
-  authDomain: "chit-chat-42aa1.firebaseapp.com",
-  databaseURL: "https://chit-chat-42aa1.firebaseio.com",
-  projectId: "chit-chat-42aa1",
-  storageBucket: "chit-chat-42aa1.appspot.com",
-  messagingSenderId: "251175505954"
-});
 
 class Chat extends React.Component {
   constructor(props) {
@@ -39,6 +32,7 @@ class Chat extends React.Component {
     return (
       <div>
         <h1>Chat</h1>
+        <Auth />
         <LiveUsers
           selectedId={this.state.selectedUserId}
           select={this.selectUser}

@@ -1,0 +1,37 @@
+.user-info {
+  border: 1px solid #CCC;
+  clear: both;
+  margin: 0 0 20px auto;
+  max-width: 400px;
+  padding: 10px;
+  text-align: left;
+}
+
+.user-info .user-info:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.user-info .photo-container {
+  background-color: #EEE;
+  border: 1px solid #CCC;
+  float: left;
+  height: 80px;
+  margin-right: 10px;
+  width: 80px;
+}
+
+.user-info .photo {
+  height: 80px;
+  margin: 0;
+  width: 80px;
+}
+
+@media (max-width: 300px) {
+  .user-info .photo-container,
+  .user-info .photo {
+    height: 40px;
+    width: 40px;
+  }
+}

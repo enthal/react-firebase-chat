@@ -2481,6 +2481,12 @@ firebase@^4.1.2:
     promise-polyfill "^6.0.2"
     xmlhttprequest "^1.8.0"
 
+firebaseui@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/firebaseui/-/firebaseui-2.1.1.tgz#2138f68945505870c8beb5951933000f9f54b7aa"
+  dependencies:
+    firebase "^4.1.2"
+
 flat-cache@^1.2.1:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-1.2.2.tgz#fa86714e72c21db88601761ecf2f555d1abc6b96"
