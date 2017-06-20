@@ -1,15 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // import App from './App';
-import Auth from './Auth';
+
+import * as _ from 'lodash';
+import { connect } from 'react-firebase';
+import classNames from 'classnames';
+import { BrowserRouter, NavLink } from 'react-router-dom'
 
 import registerServiceWorker from './registerServiceWorker';
 import firebase from './firebase';
-import { connect } from 'react-firebase';
-import classNames from 'classnames';
-import * as _ from 'lodash';
+import Auth from './Auth';
 import './index.css';
 
+
+const App = () => (
+  <BrowserRouter>
+    <Chat />
+  </BrowserRouter>
+)
 
 class Chat extends React.Component {
   constructor(props) {
@@ -43,8 +51,7 @@ class Chat extends React.Component {
           <div>
           <LiveUsers />
           <LiveRooms
-            selectedId={this.state.selectedRoomId}
-            select={this.selectRoom}
+            selectablePathBase="/rooms/"
             />
           {this.state.selectedRoomId &&
             <LiveMessages
@@ -120,7 +127,7 @@ const Message = ({userId, when, text}, id, {users}) => (
 
 
 const NamedThings = (title, renderThing, propsAndData) => {
-  const {things, push, selectedId, select, ...auxPropsAndData} = propsAndData;
+  const {things, push, selectedId, select, selectablePathBase, ...auxPropsAndData} = propsAndData;
   if (select && !selectedId && _.size(things))  select(_.first(_.keys(things)));  // TODO: no: "Warning: setState(...): Cannot update during an existing state transition (such as within `render` or another component's constructor). Render methods should be a pure function of props and state; constructor side-effects are an anti-pattern, but can be moved to `componentWillMount`."
   return (
     <div className={classNames('named-things', {'selectable-list':select})}>
@@ -132,7 +139,14 @@ const NamedThings = (title, renderThing, propsAndData) => {
           className={classNames({selected: id === selectedId})}
           onClick={()=>select&&select(id)}
           >
-          {renderThing(thing, id, auxPropsAndData)}
+          { selectablePathBase
+            ? <NavLink
+                to={selectablePathBase+id}
+                activeClassName="selected"
+              >
+                renderThing(thing, id, auxPropsAndData)
+              </NavLink>
+            : renderThing(thing, id, auxPropsAndData)}
         </li>
       ))}
       </ul>
