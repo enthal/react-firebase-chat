@@ -18,11 +18,11 @@ class Chat extends React.Component {
       selectedRoomId: null,
       user: null,
     };
-    this.selectRoom = this.selectRoom.bind(this);
   }
 
-  selectRoom(id) {
+  selectRoom = (id) => {
     this.setState({selectedRoomId: id});
+    console.log("selectRoom", this);
   }
   componentDidMount() {
     this.unlistenAuth = firebase.auth().onAuthStateChanged((user) => {
@@ -153,8 +153,6 @@ class InputAndButton extends React.Component {
     this.state = {
       text: '',
     }
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onChange = this.onChange.bind(this);
   }
 
   render() {
@@ -168,12 +166,12 @@ class InputAndButton extends React.Component {
     );
   }
 
-  onChange(e) {
+  onChange = (e) => {
     this.setState({text: e.target.value.trimLeft()});
   }
 
-  onSubmit(e) {
-    console.log("onSubmit",e);
+  onSubmit = (e) => {
+    console.log("onSubmit:",e);
     e.preventDefault();
     this.props.onSubmit(this.state.text.trim());
     this.setState({text: ""});
